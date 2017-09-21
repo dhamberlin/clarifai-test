@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Clarifai Test</title>
+  <style>
+    body {
+      background-color: steelblue;
+    }
+    #inputDiv {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #imageCapture {
+      width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+    }
+    #imageCapture + label {
+      font-size: 3.25em;
+      font-weight: 700;
+      background-color: darkgrey;
+      margin: 50px;
+      padding: 15px;
+      border: 5px solid white;
+    }
+    #output {
+      display: block;
+      text-align: center;
+      font-size: 3em;
+    }
+  </style>
+</head>
+<body>
+  <div id="inputDiv">
+    <input name="imageCapture" id="imageCapture" type="file" accept="image/*" />
+    <label for="imageCapture">Take / select a photo</label>
+    <!-- <button id="sendButton">Click to send</button> -->
+  </div>
+  <div id="output"></div>
+  <script type="text/javascript" src="main.js"></script>
+</body>
+</html>
