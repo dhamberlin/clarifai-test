@@ -16,7 +16,7 @@ function sendImage(base64Image) {
       console.log(parsed)
       const valuesForDisplay = concepts.map(({ name, value }) => ([ name, value ]))
       console.table(valuesForDisplay)
-      dataOutputDiv.innerHTML = valuesForDisplay.map(tuple => tuple.join(', ')).join('<br>')
+      dataOutputDiv.innerHTML = valuesForDisplay.map(tuple => tuple.join(': ')).join('<br>')
     })
   }
 }
