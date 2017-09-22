@@ -11,22 +11,28 @@ app.use(morgan('dev'))
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(express.static(__dirname))
 
+const models = {
+  general: 'aaa03c23b3724a16a56b629203edc62c',
+  apparel: 'e0be3b9d6a454f0493ac3a30784001ff',
+  celebrity: 'e466caa0619f444ab97497640cefc4dc'
+}
 
 app.post('/image', (req, res) => {
-  const url = 'https://api.clarifai.com/v2/models/aaa03c23b3724a16a56b629203edc62c/outputs'
+  let { model, image } = req.body
+  // model = 'apparel'
+  const url = `https://api.clarifai.com/v2/models/${models[model]}/outputs`
   const headers = {
     Authorization: `Key ${API_KEY}`,
     'Content-Type': 'application/json'
   }
   const imageURL = 'https://i.pinimg.com/736x/63/0f/0e/630f0ef3f6f3126ca11f19f4a9b85243--dachshund-puppies-weenie-dogs.jpg'
-  const base64Image = req.body.image
   // console.log(base64Image)
   const body = `{
     "inputs": [
       {
         "data": {
           "image": {
-            "base64": "${base64Image}"
+            "base64": "${image}"
           }
         }
       }
