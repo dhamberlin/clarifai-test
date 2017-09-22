@@ -32,10 +32,21 @@
       text-align: center;
       font-size: 3em;
     }
+    #modelSelect {
+      width: 40%;
+      height: 10%;
+      font-size: 2em;
+    }
+    #selectLabel {
+      font-size: 2em;
+    }
   </style>
 </head>
 <body>
+  </select>
   <div id="inputDiv">
+    <label for"modelSelect" id="selectLabel">Select a model</label>
+    <select id="modelSelect">
     <input name="imageCapture" id="imageCapture" type="file" accept="image/*" />
     <label for="imageCapture">Take / select a photo</label>
     <!-- <button id="sendButton">Click to send</button> -->

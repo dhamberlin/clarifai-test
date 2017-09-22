@@ -1,14 +1,19 @@
 const outputDiv = document.getElementById('outputDiv')
 
+const models = ['general', 'apparel']
+
 function sendImage(base64Image) {
-  console.log(typeof base64Image)
+  const model = modelSelectEl.value
   if (typeof base64Image === 'object') {
     getImage({ target: imageCaptureEl })
   } else {
     fetch('/image', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json'},
-      body: `{"image":"${base64Image}"}`
+      body: `{
+        "image":"${base64Image}",
+        "model":"${model}"
+      }`
     })
     .then(response => response.json())
     .then(parsed => {
@@ -43,6 +48,9 @@ function getImage(e) {
 // const sendButtonEl = document.getElementById('sendButton')
 const imageCaptureEl = document.getElementById('imageCapture')
 const dataOutputDiv = document.getElementById('output')
+const modelSelectEl = document.getElementById('modelSelect')
+
+modelSelect.innerHTML = models.map(m => `<option value="${m}">${m}</option>`).join('\n')
 
 imageCaptureEl.addEventListener('change', getImage)
 // sendButtonEl.addEventListener('click', sendImage)
