@@ -6,7 +6,7 @@
     body {
       background-color: steelblue;
     }
-    #inputDiv {
+    .container {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -44,11 +44,11 @@
 </head>
 <body>
   </select>
-  <div id="inputDiv">
-    <div>
-      <label for"modelSelect" id="selectLabel">Select a model</label>
-      <select id="modelSelect">
-    </div>
+  <div class="container">
+    <label for"modelSelect" id="selectLabel">Select a model</label>
+    <select id="modelSelect">
+  </div>
+  <div class="container">
     <input name="imageCapture" id="imageCapture" type="file" accept="image/*" />
     <label for="imageCapture">Take / select a photo</label>
     <!-- <button id="sendButton">Click to send</button> -->
