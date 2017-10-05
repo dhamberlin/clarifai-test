@@ -14,7 +14,8 @@ app.use(express.static(__dirname))
 const models = {
   general: 'aaa03c23b3724a16a56b629203edc62c',
   apparel: 'e0be3b9d6a454f0493ac3a30784001ff',
-  celebrity: 'e466caa0619f444ab97497640cefc4dc'
+  celebrity: 'e466caa0619f444ab97497640cefc4dc',
+  color: 'eeed0b6733a644cea07cf4c60f87ebb7'
 }
 
 app.post('/image', (req, res) => {
