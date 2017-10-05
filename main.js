@@ -107,6 +107,7 @@ function sendImage(base64Image) {
       )
       dataOutputDiv.innerHTML = valuesForDisplay.map(tuple => tuple.join(': ')).join('<br>')
       console.log('Total time: ', performance.now() - metrics.startTime, 'ms')
+      imageCapture.value = null;
     })
   }
 }
