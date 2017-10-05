@@ -107,6 +107,8 @@ function sendImage(base64Image) {
       )
       dataOutputDiv.innerHTML = valuesForDisplay.map(tuple => tuple.join(': ')).join('<br>')
       console.log('Total time: ', performance.now() - metrics.startTime, 'ms')
+      compressedImgTag.src = metrics.finalBase64 || metrics.originalBase64
+      metrics = {}
       imageCapture.value = null;
     })
   }
@@ -140,12 +142,12 @@ const dataOutputDiv = document.getElementById('output')
 const modelSelectEl = document.getElementById('modelSelect')
 const compressionSelectEl = document.getElementById('compressionSelect')
 const performanceDiv = document.getElementById('performance')
+const compressedImgTag = document.getElementById('compressed')
 
 modelSelect.innerHTML = models.map(m => `<option value="${m}" ${m === 'general' && 'selected'}>${m}</option>`).join('\n')
 
 imageCaptureEl.addEventListener('change', (e) => {
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {
-    metrics = {}
     performanceDiv.innerHTML = 'Loading...'
     dataOutputDiv.innerHTML = ''
     compressionSelectEl.value === 'Use compression' ? handleInputChange() : getImage(e)
