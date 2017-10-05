@@ -9,7 +9,6 @@ const getFileSize = base64String =>
 const metrics = {} // performance guage, delete later
 
 const handleInputChange = () => {
-  performanceDiv.innerHTML = "Loading..."
   metrics.startTime = performance.now()
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {
     // TODO: Render spinner
@@ -113,7 +112,6 @@ function sendImage(base64Image) {
 }
 
 function getImage(e) {
-  performanceDiv.innerHTML = "Loading..."
   console.log('No compression')
   metrics.startTime = performance.now()
   const capturedImage = e.target.files[0]
@@ -146,6 +144,9 @@ const performanceDiv = document.getElementById('performance')
 modelSelect.innerHTML = models.map(m => `<option value="${m}" ${m === 'general' && 'selected'}>${m}</option>`).join('\n')
 
 imageCaptureEl.addEventListener('change', (e) => {
-  if (imageCaptureEl.files && imageCaptureEl.files[0])
+  if (imageCaptureEl.files && imageCaptureEl.files[0]) {
+    performanceDiv.innerHTML = 'Loading...'
+    dataOutputDiv.innerHTML = ''
     compressionSelectEl.value === 'Use compression' ? handleInputChange() : getImage(e)
+  }
 })
