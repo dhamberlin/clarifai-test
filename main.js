@@ -6,7 +6,7 @@ const models = ['general', 'apparel', 'color']
 const getFileSize = base64String =>
   Math.round((base64String.length * 6) / 8 / 1024)
 
-const metrics = {} // performance guage, delete later
+let metrics = {} // performance guage, delete later
 
 const handleInputChange = () => {
   metrics.startTime = performance.now()
@@ -99,11 +99,11 @@ function sendImage(base64Image) {
       const valuesForDisplay = concepts.map(({ name, value }) => ([ name, value ]))
       console.table(valuesForDisplay)
       performanceDiv.innerHTML = (
-        `<p>Original file size: ${getFileSize(metrics.originalBase64)}kb</p>
-        <p>Compressed file size: ${getFileSize(metrics.finalBase64)}kb</p>
-        <p>Prep time: ${('' + metrics.prepTime).substring(0, 8)}ms</p>
-        <p>Compression time: ${('' + metrics.compressionTime).substring(0, 8)}ms</p>
-        <p>Total time: ${('' + metrics.totalTime).substring(0, 8)}</p>`
+        `<p>Total time: ${('' + metrics.totalTime).substring(0, 8)}</p>
+        <p>Original file size: ${getFileSize(metrics.originalBase64)}kb</p>
+        ${metrics.finalBase64 ? `<p>Compressed file size: ${getFileSize(metrics.finalBase64)}kb</p>
+          <p>Prep time: ${('' + metrics.prepTime).substring(0, 8)}ms</p>
+          <p>Compression time: ${('' + metrics.compressionTime).substring(0, 8)}ms</p>` : ''}`
       )
       dataOutputDiv.innerHTML = valuesForDisplay.map(tuple => tuple.join(': ')).join('<br>')
       console.log('Total time: ', performance.now() - metrics.startTime, 'ms')
@@ -125,7 +125,6 @@ function getImage(e) {
   reader.onload = () => {
     const timeElapsed = performance.now() - startTime
     metrics.originalBase64 = reader.result
-    metrics.finalBase64 = reader.result
     console.log(`Image converted in ${timeElapsed}ms`)
     sendImage(reader.result.split(',')[1])
   }
@@ -145,6 +144,7 @@ modelSelect.innerHTML = models.map(m => `<option value="${m}" ${m === 'general' 
 
 imageCaptureEl.addEventListener('change', (e) => {
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {
+    metrics = {}
     performanceDiv.innerHTML = 'Loading...'
     dataOutputDiv.innerHTML = ''
     compressionSelectEl.value === 'Use compression' ? handleInputChange() : getImage(e)
