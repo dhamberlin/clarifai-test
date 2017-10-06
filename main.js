@@ -74,7 +74,6 @@ const getOrientation = (upload) =>
     reader.readAsArrayBuffer(upload)
   })
 
-const outputDiv = document.getElementById('outputDiv')
 
 const models = ['general', 'apparel', 'color']
 
@@ -120,7 +119,6 @@ const prepareImageForCompression = upload =>
 
 const compressImage = (image, orientation) => {
   metrics.orientation = orientation
-  console.log(orientation)
   const start = performance.now()
 
   // Tweak these values to balance filesize vs quality
@@ -143,9 +141,10 @@ const compressImage = (image, orientation) => {
   canvas.width = image.width
   canvas.height = image.height
   const ctx = canvas.getContext('2d')
-  ctx.drawImage(image, 0, 0, image.width, image.height)
 
   rotateImage(canvas, ctx, orientation)
+
+  ctx.drawImage(image, 0, 0, image.width, image.height)
 
   const compressed = canvas.toDataURL('image/jpeg', 0.8)
   const finish = performance.now()
@@ -155,7 +154,10 @@ const compressImage = (image, orientation) => {
 }
 
 const rotateImage = (canvas, ctx, orientation) => {
-  if (!orientation) return
+  // if (orientation < 2) return
+  orientation = 4
+  console.log('triggering')
+  console.log('orientation: ', orientation)
   const width = canvas.width
   const height = canvas.height
   if (orientation > 8) {
@@ -270,6 +272,8 @@ const compressionSelectEl = document.getElementById('compressionSelect')
 const performanceDiv = document.getElementById('performance')
 const compressedImgTag = document.getElementById('compressed')
 const orientaionSelectEl = document.getElementById('orientationSelect')
+const outputDiv = document.getElementById('outputDiv')
+
 
 modelSelect.innerHTML = models.map(m => `<option value="${m}" ${m === 'general' && 'selected'}>${m} model</option>`).join('\n')
 
