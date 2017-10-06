@@ -1,10 +1,10 @@
-#Clarifai Test
+# Clarifai Test
 This is an experiment to test getting info from Clarifai's image recognition API via mobile upload. Because mobile photos tend to be large, it includes compression options to reduce wait time for results. Formatted for phone but works on desktop as well.
 
-#Demo
+## Demo
 [clarifai-test.herokuapp.com](https://clarifai-test.herokuapp.com/)
 
-##Installation
+## Installation
 1. Clone repo
 2. npm install
 3. Get an API key from Clarifai.com
