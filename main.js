@@ -1,4 +1,4 @@
-function getOrientation(file, callback) {
+function getOrientationCallback(file, callback) {
   var reader = new FileReader();
   reader.onload = function(e) {
 
@@ -26,6 +26,45 @@ function getOrientation(file, callback) {
   reader.readAsArrayBuffer(file);
 }
 
+// Check EXIF of uploaded pic
+// Resolves to -2 if image is not jpeg
+// Resolves to -1 if orientation is not defined
+const getOrientation = (upload) =>
+  new Promise((resolve, reject) => {
+    metrics.orientationStart = performance.now()
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const view = new DataView(e.target.result)
+      if (view.getUint16(0, false) !== 0xFFD8) resolve(-2) // not jpeg
+      const length = view.byteLength
+      let offset = 2
+      while (offset < length) {
+        const marker = view.getUint16(offset, false)
+        offset += 2
+        if (marker === 0xFFE1) {
+          if (view.getUint32(offset += 2, false) !== 0x45786966) resolve(-1)
+          let little = view.getUint16(offset += 6, false) === 0x4949
+          offset += view.getUint32(offset + 4, little)
+          const tags = view.getUint16(offset, little)
+          offset += 2
+          for (let i = 0; i < tags; i++) {
+            if(view.getUint16(offset + (i * 12), little) === 0x0112) {
+              const orientation = view.getUint16(offset + (i * 12) + 8, little)
+              return resolve(orientation)
+            }
+          }
+        } else if ((marker & 0xFF00) !== 0xFF00) {
+          break
+        } else {
+          offset += view.getUint16(offset, false)
+        }
+      }
+      resolve(-1) // orientation not defined
+    }
+
+    reader.readAsArrayBuffer(upload)
+  })
+
 const outputDiv = document.getElementById('outputDiv')
 
 const models = ['general', 'apparel', 'color']
@@ -46,11 +85,17 @@ const getImageWithCompression = () => {
       .then(() => {
         metrics.finish = performance.now()
       })
-    getOrientation(upload, (orientation) => alert(orientation))
+    getOrientation(upload)
+      .then(alertOrientation)
+    // getOrientationCallback(upload, alertOrientation)
   } else {
     // user tried to upload a photo but something went wrong
     // or they cancelled the upload
   }
+}
+
+function alertOrientation(orientation) {
+  alert("orientation from EXIF: " + orientation)
 }
 
 const prepareImageForCompression = upload =>
