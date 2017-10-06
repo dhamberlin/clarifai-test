@@ -26,23 +26,30 @@ function getOrientationCallback(file, callback) {
   reader.readAsArrayBuffer(file);
 }
 
-// Check EXIF of uploaded pic
+// Check EXIF of uploaded pic for orientation data
 // Resolves to -2 if image is not jpeg
 // Resolves to -1 if orientation is not defined
 const getOrientation = (upload) =>
   new Promise((resolve, reject) => {
+    if (!orientaionSelectEl.value) resolve(false)
     metrics.orientationStart = performance.now()
     const reader = new FileReader()
     reader.onload = (e) => {
       const view = new DataView(e.target.result)
-      if (view.getUint16(0, false) !== 0xFFD8) resolve(-2) // not jpeg
+      if (view.getUint16(0, false) !== 0xFFD8) {
+        metrics.orientationFinish = performance.now()
+        resolve(-2) // not jpeg
+      }
       const length = view.byteLength
       let offset = 2
       while (offset < length) {
         const marker = view.getUint16(offset, false)
         offset += 2
         if (marker === 0xFFE1) {
-          if (view.getUint32(offset += 2, false) !== 0x45786966) resolve(-1)
+          if (view.getUint32(offset += 2, false) !== 0x45786966) {
+            metrics.orientationFinish = performance.now()
+            resolve(-1)
+          }
           let little = view.getUint16(offset += 6, false) === 0x4949
           offset += view.getUint32(offset + 4, little)
           const tags = view.getUint16(offset, little)
@@ -50,6 +57,7 @@ const getOrientation = (upload) =>
           for (let i = 0; i < tags; i++) {
             if(view.getUint16(offset + (i * 12), little) === 0x0112) {
               const orientation = view.getUint16(offset + (i * 12) + 8, little)
+              metrics.orientationFinish = performance.now()
               return resolve(orientation)
             }
           }
@@ -59,6 +67,7 @@ const getOrientation = (upload) =>
           offset += view.getUint16(offset, false)
         }
       }
+      metrics.orientationFinish = performance.now()
       resolve(-1) // orientation not defined
     }
 
@@ -79,23 +88,18 @@ const getImageWithCompression = () => {
   metrics.startTime = performance.now()
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {
     const upload = imageCaptureEl.files[0]
-    prepareImageForCompression(upload)
-      .then(img => compressImage(img))
+    const preppedImage = prepareImageForCompression(upload)
+    const orientation = getOrientation(upload)
+    Promise.all([preppedImage, orientation])
+      .then(([img, orientation]) => compressImage(img, orientation))
       .then(compressedImage => sendImage(compressedImage.split(',')[1]))
       .then(() => {
         metrics.finish = performance.now()
       })
-    getOrientation(upload)
-      .then(alertOrientation)
-    // getOrientationCallback(upload, alertOrientation)
   } else {
     // user tried to upload a photo but something went wrong
     // or they cancelled the upload
   }
-}
-
-function alertOrientation(orientation) {
-  alert("orientation from EXIF: " + orientation)
 }
 
 const prepareImageForCompression = upload =>
@@ -114,7 +118,9 @@ const prepareImageForCompression = upload =>
     reader.readAsDataURL(upload)
   })
 
-const compressImage = (image) => {
+const compressImage = (image, orientation) => {
+  metrics.orientation = orientation
+  console.log(orientation)
   const start = performance.now()
 
   // Tweak these values to balance filesize vs quality
@@ -168,9 +174,15 @@ function sendImage(base64Image) {
       performanceDiv.innerHTML = (
         `<p>Total time: ${('' + metrics.totalTime).substring(0, 8)}</p>
         <p>Original file size: ${getFileSize(metrics.originalBase64)}kb</p>
-        ${metrics.finalBase64 ? `<p>Compressed file size: ${getFileSize(metrics.finalBase64)}kb</p>
+        ${metrics.finalBase64 ?
+          `<p>Compressed file size: ${getFileSize(metrics.finalBase64)}kb</p>
           <p>Prep time: ${('' + metrics.prepTime).substring(0, 8)}ms</p>
-          <p>Compression time: ${('' + metrics.compressionTime).substring(0, 8)}ms</p>` : ''}`
+          <p>Compression time: ${('' + metrics.compressionTime).substring(0, 8)}ms</p>`
+          : ''}
+        ${metrics.orientationFinish ?
+          `<p>getOrientation runtime: ${('' + (metrics.orientationFinish - metrics.orientationStart)).substring(0, 8)}ms</p>
+          <p>Orienation value: ${metrics.orientation}</p>`
+        : ''}`
       )
       dataOutputDiv.innerHTML = valuesForDisplay.map(tuple => tuple.join(': ')).join('<br>')
       console.log('Total time: ', performance.now() - metrics.startTime, 'ms')
@@ -205,8 +217,9 @@ const modelSelectEl = document.getElementById('modelSelect')
 const compressionSelectEl = document.getElementById('compressionSelect')
 const performanceDiv = document.getElementById('performance')
 const compressedImgTag = document.getElementById('compressed')
+const orientaionSelectEl = document.getElementById('orientationSelect')
 
-modelSelect.innerHTML = models.map(m => `<option value="${m}" ${m === 'general' && 'selected'}>${m}</option>`).join('\n')
+modelSelect.innerHTML = models.map(m => `<option value="${m}" ${m === 'general' && 'selected'}>${m} model</option>`).join('\n')
 
 imageCaptureEl.addEventListener('change', (e) => {
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {

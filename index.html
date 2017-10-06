@@ -11,6 +11,10 @@
       flex-direction: column;
       align-items: center;
     }
+    .selectContainer {
+      display: flex;
+      justify-content: space-around;
+    }
     #imageCapture {
       width: 0.1px;
       height: 0.1px;
@@ -42,23 +46,29 @@
       margin-bottom: 10px;
     }
     select {
-      width: 40%;
-      height: 4em;
+      width: 30%;
+      height: 3em;
       font-size: 2em;
     }
     label {
       font-size: 2em;
+      text-align: center;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <label for"modelSelect" id="selectLabel">Select a model</label>
+    <label>Options: </label>
+  </div>
+  <div class="selectContainer">
     <select id="modelSelect"></select>
-    <label for"compressionSelect" id="compressionSelectLabel">Use compression?</label>
     <select id="compressionSelect">
       <option value="Use compression" selected>Use compression</option>
       <option value="No compression">No compression</option>
+    </select>
+    <select id="orientationSelect">
+      <option value=1 selected>Rotate photo</option>
+      <option value=0>Don't rotate photo</option>
     </select>
   </div>
   <div class="container">
