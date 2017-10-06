@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const fetch = require('node-fetch')
 
-const API_KEY = require('./keys.js')
+const API_KEY = process.env.key || require('./keys.js')
 
 const app = express()
 
