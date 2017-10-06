@@ -7,6 +7,6 @@ This is an experiment to test getting info from Clarifai's image recognition API
 ## Installation
 1. Clone repo
 2. npm install
-3. Get an API key from Clarifai.com
+3. Get an API key from [https://www.clarifai.com/developer/account/api-keys](https://www.clarifai.com/developer/account/api-keys)
 4. Create a file called 'keys.js' and export your API key from it
 5. npm start
