@@ -42,5 +42,9 @@ app.post('/image', (req, res) => {
     .catch(err => console.error(err))
 })
 
+app.get('/rotate', (req, res) => {
+  res.sendFile('./rotate.html')
+})
+
 const port = process.env.PORT || 8080
 app.listen(port, () => console.log(`listening on ${port}`))
