@@ -8,21 +8,15 @@ const getFileSize = base64String =>
 
 let metrics = {} // performance guage, delete later
 
-const handleInputChange = () => {
+const getImageWithCompression = () => {
   metrics.startTime = performance.now()
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {
-    // TODO: Render spinner
     const upload = imageCaptureEl.files[0]
     prepareImageForCompression(upload)
       .then(img => compressImage(img))
       .then(compressedImage => sendImage(compressedImage.split(',')[1]))
       .then(() => {
         metrics.finish = performance.now()
-        console.log('Original file size: ', getFileSize(metrics.originalBase64), 'kb')
-        console.log('Compressed file size: ', getFileSize(metrics.finalBase64), 'kb')
-        console.log('Prep time: ', metrics.prepTime, 'ms')
-        console.log('Compression time: ', metrics.compressionTime, 'ms')
-        // console.log('Total time: ', metrics.finish - metrics.startTime, 'ms')
       })
   } else {
     // user tried to upload a photo but something went wrong
@@ -114,12 +108,8 @@ function sendImage(base64Image) {
 }
 
 function getImage(e) {
-  console.log('No compression')
   metrics.startTime = performance.now()
   const capturedImage = e.target.files[0]
-  console.log(capturedImage)
-  // const base64Image = btoa(capturedImage)
-  // sendImage(base64Image)
 
   const reader = new FileReader()
   const startTime = performance.now()
@@ -127,7 +117,6 @@ function getImage(e) {
   reader.onload = () => {
     const timeElapsed = performance.now() - startTime
     metrics.originalBase64 = reader.result
-    console.log(`Image converted in ${timeElapsed}ms`)
     sendImage(reader.result.split(',')[1])
   }
   reader.onerror = (err) => {
@@ -149,6 +138,6 @@ imageCaptureEl.addEventListener('change', (e) => {
   if (imageCaptureEl.files && imageCaptureEl.files[0]) {
     performanceDiv.innerHTML = 'Loading...'
     dataOutputDiv.innerHTML = ''
-    compressionSelectEl.value === 'Use compression' ? handleInputChange() : getImage(e)
+    compressionSelectEl.value === 'Use compression' ? getImageWithCompression() : getImage(e)
   }
 })

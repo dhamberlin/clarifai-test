@@ -2,7 +2,6 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const fetch = require('node-fetch')
-
 const API_KEY = process.env.key || require('./keys.js')
 
 const app = express()
@@ -19,37 +18,28 @@ const models = {
 }
 
 app.post('/image', (req, res) => {
-  let { model, image } = req.body
-  // model = 'apparel'
+  const { model, image } = req.body
   const url = `https://api.clarifai.com/v2/models/${models[model]}/outputs`
+  const method = 'POST'
   const headers = {
     Authorization: `Key ${API_KEY}`,
     'Content-Type': 'application/json'
   }
-  const imageURL = 'https://i.pinimg.com/736x/63/0f/0e/630f0ef3f6f3126ca11f19f4a9b85243--dachshund-puppies-weenie-dogs.jpg'
-  // console.log(base64Image)
   const body = `{
     "inputs": [
       {
         "data": {
-          "image": {
-            "base64": "${image}"
-          }
+          "image": { "base64": "${image}" }
         }
       }
     ]
   }`
-  const options = {
-    method: 'POST',
-    headers,
-    body
-  }
+  const options = { method, headers, body }
   fetch(url, options)
     .then(response => response.json())
     .then(parsed => parsed.outputs)
     .then(outputs => res.send(outputs))
     .catch(err => console.error(err))
-  // res.send({ message: 'activated' })
 })
 
 const port = process.env.PORT || 8080
