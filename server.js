@@ -43,7 +43,7 @@ app.post('/image', (req, res) => {
 })
 
 app.get('/rotate', (req, res) => {
-  res.sendFile('./rotate.html')
+  res.sendFile(__dirname + '/rotate.html')
 })
 
 const port = process.env.PORT || 8080
