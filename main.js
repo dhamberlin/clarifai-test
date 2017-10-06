@@ -51,8 +51,8 @@ const compressImage = (image) => {
 
   // Max dimensions at which we will render compressed image on iPhone 6
   // We can increase this if it proves to look bad on larger screens
-  const MAX_WIDTH = 600
-  const MAX_HEIGHT = 840
+  const MAX_WIDTH = 450
+  const MAX_HEIGHT = 630
 
   // Resize image
   if (image.width > MAX_WIDTH) {
