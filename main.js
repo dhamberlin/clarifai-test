@@ -31,7 +31,7 @@ function getOrientationCallback(file, callback) {
 // Resolves to -1 if orientation is not defined
 const getOrientation = (upload) =>
   new Promise((resolve, reject) => {
-    if (orientaionSelectEl.value === '0') resolve(false)
+    if (orientaionSelectEl.value === 'false') return resolve(-3)
     metrics.orientationStart = performance.now()
     const reader = new FileReader()
     reader.onload = (e) => {
@@ -48,7 +48,7 @@ const getOrientation = (upload) =>
         if (marker === 0xFFE1) {
           if (view.getUint32(offset += 2, false) !== 0x45786966) {
             metrics.orientationFinish = performance.now()
-            resolve(-1)
+            return resolve(-1)
           }
           let little = view.getUint16(offset += 6, false) === 0x4949
           offset += view.getUint32(offset + 4, little)
