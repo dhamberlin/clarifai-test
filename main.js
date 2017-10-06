@@ -144,11 +144,63 @@ const compressImage = (image, orientation) => {
   canvas.height = image.height
   const ctx = canvas.getContext('2d')
   ctx.drawImage(image, 0, 0, image.width, image.height)
+
+  rotateImage(canvas, ctx, orientation)
+
   const compressed = canvas.toDataURL('image/jpeg', 0.8)
   const finish = performance.now()
   metrics.compressionTime = finish - start
   metrics.finalBase64 = compressed
   return compressed
+}
+
+const rotateImage = (canvas, ctx, orientation) => {
+  if (!orientation) return
+  const width = canvas.width
+  const height = canvas.height
+  if (orientation > 8) {
+    canvas.width = height
+    canvas.height = width
+  }
+
+  switch (orientation) {
+    case 2:
+      // horizontal flip
+      ctx.translate(width, 0)
+      ctx.scale(-1, 1)
+      break
+    case 3:
+      // 180° rotate left
+      ctx.translate(width, height)
+      ctx.rotate(Math.PI)
+      break
+    case 4:
+      // vertical flip
+      ctx.translate(0, height)
+      ctx.scale(1, -1)
+      break
+    case 5:
+      // vertical flip + 90 rotate right
+      ctx.rotate(0.5 * Math.PI)
+      ctx.scale(1, -1)
+      break
+    case 6:
+      // 90° rotate right
+      ctx.rotate(0.5 * Math.PI)
+      ctx.translate(0, -height)
+      break
+    case 7:
+      // horizontal flip + 90 rotate right
+      ctx.rotate(0.5 * Math.PI)
+      ctx.translate(width, -height)
+      ctx.scale(-1, 1)
+      break
+    case 8:
+      // 90° rotate left
+      ctx.rotate(-0.5 * Math.PI)
+      ctx.translate(-width, 0)
+      break
+  }
 }
 
 function sendImage(base64Image) {
