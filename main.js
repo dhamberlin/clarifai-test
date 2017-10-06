@@ -145,7 +145,7 @@ const compressImage = (image, orientation) => {
   const ctx = canvas.getContext('2d')
   ctx.drawImage(image, 0, 0, image.width, image.height)
 
-  // rotateImage(canvas, ctx, orientation)
+  rotateImage(canvas, ctx, orientation)
 
   const compressed = canvas.toDataURL('image/jpeg', 0.8)
   const finish = performance.now()
