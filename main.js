@@ -49,8 +49,7 @@ const prepareImageForCompression = upload =>
 const compressImage = (image) => {
   const start = performance.now()
 
-  // Max dimensions at which we will render compressed image on iPhone 6
-  // We can increase this if it proves to look bad on larger screens
+  // Tweak these values to balance filesize vs quality
   const MAX_WIDTH = 450
   const MAX_HEIGHT = 630
 
