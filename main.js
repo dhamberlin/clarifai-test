@@ -157,9 +157,13 @@ const rotateImage = (canvas, ctx, orientation) => {
   if (orientation < 2) return
   const width = canvas.width
   const height = canvas.height
-  if (orientation > 8) {
-    // canvas.width = height
-    // canvas.height = width
+  // const styleHeight = canvas.style.height
+  // const styleWidth = canvas.style.width
+  if (orientation > 4) {
+    canvas.width = height
+    canvas.height = width
+    // canvas.style.width = styleHeight
+    // canvas.style.height = styleWidth
   }
 
   switch (orientation) {
