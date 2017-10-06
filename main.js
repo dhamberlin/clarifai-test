@@ -154,10 +154,7 @@ const compressImage = (image, orientation) => {
 }
 
 const rotateImage = (canvas, ctx, orientation) => {
-  // if (orientation < 2) return
-  orientation = 4
-  console.log('triggering')
-  console.log('orientation: ', orientation)
+  if (orientation < 2) return
   const width = canvas.width
   const height = canvas.height
   if (orientation > 8) {
