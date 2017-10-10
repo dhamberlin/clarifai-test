@@ -227,7 +227,7 @@ function sendImage(base64Image) {
       const valuesForDisplay = concepts.map(({ name, value }) => ([ name, value ]))
       console.table(valuesForDisplay)
       performanceDiv.innerHTML = (
-        `<p>Total time: ${('' + metrics.totalTime).substring(0, 8)}</p>
+        `<p>Total time: ${('' + metrics.totalTime).substring(0, 8)}ms</p>
         <p>Original file size: ${getFileSize(metrics.originalBase64)}kb</p>
         ${metrics.finalBase64 ?
           `<p>Compressed file size: ${getFileSize(metrics.finalBase64)}kb</p>
